@@ -514,64 +514,69 @@ async function loadAdminData() {
   }
 }
 
-// --- 2. Fungsi Menampilkan Kotak Supervisi (Algoritma Pembersih Tanggal Absolut) ---
+// --- 2. Fungsi Menampilkan Kotak Supervisi (Menampung Semua Guru yang Mengisi) ---
 function renderSupervisi() {
   if (!state.adminData) return;
 
-  const inputVal = document.getElementById("filter-date-supervisi").value; // Nilai HTML: "YYYY-MM-DD"
+  const inputVal = document.getElementById("filter-date-supervisi").value; // Format selalu "YYYY-MM-DD" dari HTML
   if (!inputVal) return;
+
+  // Pecah string "2026-08-03" menjadi komponen
+  const [targetY, targetM, targetD] = inputVal.split("-"); 
+  
+  // Ambil nama bulan singkatan Bahasa Inggris
+  const arrBulanEn = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const targetBulanTeks = arrBulanEn[parseInt(targetM) - 1]; 
+  const targetD_unpad = String(parseInt(targetD)); 
 
   const grid = document.getElementById("grid-supervisi");
   grid.innerHTML = "";
 
-  // Filter presensi dengan algoritma pembersihan string
   const presensiHariIni = state.adminData.presensi.filter(p => {
     if (!p.tgl) return false;
     let tStr = String(p.tgl);
 
-    // Cek 1: Jika string mentahnya langsung mengandung format inputVal
+    // Filter 1: Cek langsung format ISO
     if (tStr.includes(inputVal)) return true;
 
-    // Cek 2: Konversi ke Format Baku
-    try {
-      // Potong paksa teks aneh seperti "(Waktu Indochina)" agar tidak error
-      let cleanStr = tStr.split('(')[0].trim();
-      let d = new Date(cleanStr);
-
-      // Jika berhasil jadi format Waktu yang valid
-      if (!isNaN(d.getTime())) {
-        let yyyy = d.getFullYear();
-        let mm = String(d.getMonth() + 1).padStart(2, '0');
-        let dd = String(d.getDate()).padStart(2, '0');
-        
-        let normalizedDate = `${yyyy}-${mm}-${dd}`; // Jadikan YYYY-MM-DD
-        
-        if (normalizedDate === inputVal) return true;
+    // Filter 2: Mencari kata bulan, tahun, dan tanggal
+    if (tStr.includes(targetY) && tStr.includes(targetBulanTeks)) {
+      if (tStr.includes(` ${targetD} `) || tStr.includes(` ${targetD_unpad} `)) {
+        return true;
       }
-    } catch(e) {
-      console.log("Error parsing date:", e);
+    }
+
+    // Filter 3: Cek format angka lokal "03/08/2026"
+    if (tStr.includes(`${targetD}/${targetM}/${targetY}`) || tStr.includes(`${targetD_unpad}/${parseInt(targetM)}/${targetY}`)) {
+      return true;
     }
 
     return false;
   });
 
-  const kelasTeraport = presensiHariIni.map(p => String(p.kelas).trim());
-
   state.adminData.daftarKelas.forEach(kls => {
-    const isReported = kelasTeraport.includes(String(kls).trim());
-    const reportData = isReported ? presensiHariIni.find(p => String(p.kelas).trim() === String(kls).trim()) : null;
+    // Ambil SEMUA laporan untuk kelas ini pada tanggal terpilih
+    const reportsForClass = presensiHariIni.filter(p => String(p.kelas).trim() === String(kls).trim());
+    const isReported = reportsForClass.length > 0;
 
     let cardHTML = `<div class="border rounded-xl p-4 ${isReported ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}">
       <h4 class="font-bold text-lg mb-2">${kls}</h4>`;
 
     if (isReported) {
+      // Ambil laporan pertama untuk rincian materi & kehadiran
+      const reportData = reportsForClass[0];
+      
+      // Gabungkan seluruh nama guru yang mengisi di kelas ini
+      const semuaGuru = reportsForClass.map(p => p.guru).filter(Boolean).join(", ");
+      const jumlahLaporan = reportsForClass.length > 1 ? ` (${reportsForClass.length} Laporan)` : "";
+
       cardHTML += `
-        <p class="text-sm text-green-700 font-semibold mb-1">✅ Telah Dilaporkan</p>
-        <p class="text-xs text-gray-600"><b>Guru:</b> ${reportData.guru}</p>
+        <p class="text-sm text-green-700 font-semibold mb-1">✅ Telah Dilaporkan${jumlahLaporan}</p>
+        <p class="text-xs text-gray-600"><b>Guru:</b> ${semuaGuru}</p>
         <p class="text-xs text-gray-600"><b>Waktu:</b> ${reportData.jam}</p>
         <p class="text-xs text-gray-600 mt-1 italic">"${reportData.materi}"</p>
         <div class="mt-2 pt-2 border-t border-green-200">
-          <p class="text-xs text-red-600 font-medium"><b>Tidak Hadir:</b> ${reportData.absen}</p>
+          <p class="text-xs text-red-600 font-medium"><b>Tidak Hadir:</b> ${reportData.absen || '-'}</p>
         </div>
       `;
     } else {
@@ -581,7 +586,6 @@ function renderSupervisi() {
     grid.innerHTML += cardHTML;
   });
 }
-
 function renderRekapJurnal() {
   if(!state.adminData) return;
   const tbody = document.getElementById("tbody-rekap-jurnal");
