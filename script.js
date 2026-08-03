@@ -502,37 +502,38 @@ async function loadAdminData() {
   }
 }
 
-// --- 2. Fungsi Menampilkan Kotak Supervisi (Presisi Parsing Date) ---
+// --- 2. Fungsi Menampilkan Kotak Supervisi (Anti Invalid Date / Kebal Timezone String) ---
 function renderSupervisi() {
   if (!state.adminData) return;
 
-  const inputVal = document.getElementById("filter-date-supervisi").value; // Format: YYYY-MM-DD
+  const inputVal = document.getElementById("filter-date-supervisi").value; // Format input: YYYY-MM-DD
   if (!inputVal) return;
 
-  // Split tanggal dari input picker (misal: "2026-03-08")
   const [targetYear, targetMonth, targetDay] = inputVal.split("-").map(Number);
 
   const grid = document.getElementById("grid-supervisi");
   grid.innerHTML = "";
 
-  // Filter presensi dengan membandingkan Tahun, Bulan (0-index), dan Tanggal secara akurat
   const presensiHariIni = state.adminData.presensi.filter(p => {
     if (!p.tgl) return false;
-    
-    // Convert tanggal dari Sheets/GAS ke Object Date
-    const d = new Date(p.tgl);
-    
-    // Cek apakah parsing berhasil (Valid Date)
-    if (isNaN(d.getTime())) {
-      // Fallback manual jika objek Date gagal: cari pencocokan string YYYY-MM-DD atau DD/MM/YYYY
-      const tStr = String(p.tgl);
-      return tStr.includes(inputVal);
+
+    let rawStr = String(p.tgl);
+
+    // 1. Cek jika string mentah langsung mengandung format YYYY-MM-DD
+    if (rawStr.includes(inputVal)) return true;
+
+    // 2. Bersihkan teks kurung zona waktu seperti "(Waktu Indochina)" yang merusak Date parsing
+    let cleanStr = rawStr.replace(/\s*\([^)]*\)/g, '');
+    let d = new Date(cleanStr);
+
+    // 3. Jika Date valid, cocokkan Tahun, Bulan (0-indexed), dan Tanggal
+    if (!isNaN(d.getTime())) {
+      return d.getFullYear() === targetYear && 
+             (d.getMonth() + 1) === targetMonth && 
+             d.getDate() === targetDay;
     }
 
-    // Cocokkan komponen tanggalnya
-    return d.getFullYear() === targetYear && 
-           (d.getMonth() + 1) === targetMonth && 
-           d.getDate() === targetDay;
+    return false;
   });
 
   const kelasTeraport = presensiHariIni.map(p => String(p.kelas).trim());
