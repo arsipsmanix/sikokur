@@ -1,12 +1,9 @@
-// 1. Simpan URL API dari Google Apps Script
 const API_URL = "https://script.google.com/macros/s/AKfycbz39TvSCyZyTim_f_8vsd0H93r25IJgnnUcZT8cK2qZDAlpQYqJtghRGdmBsKU1yl4/exec"; 
 
-// 2. Event Listener: Menjalankan fungsi saat halaman web pertama kali selesai dimuat
 document.addEventListener("DOMContentLoaded", () => {
   loadDataAwal();
 });
 
-// 3. Fungsi untuk mengambil data dari backend (GAS)
 async function loadDataAwal() {
   const selectGuru = document.getElementById("select-guru");
   selectGuru.innerHTML = '<option value="">Sedang memuat data...</option>';
@@ -44,10 +41,13 @@ let state = {
   guru: "",
   kelas: "",
   siswa: [],
-  adminData: null // Baru: untuk menyimpan data admin
+  adminData: null,
+  currentJenjang: "ALL" 
 };
 
-// 4. Logika Tombol "Masuk ke Kelas" (Menuju Dashboard)
+// =====================================
+// NAVIGASI APLIKASI
+// =====================================
 document.getElementById("form-login").addEventListener("submit", async function(event) {
   event.preventDefault(); 
   
@@ -67,9 +67,6 @@ document.getElementById("form-login").addEventListener("submit", async function(
   await loadDataSiswa(state.kelas);
 });
 
-// =====================================
-// NAVIGASI DASHBOARD 
-// =====================================
 document.getElementById("menu-presensi").addEventListener("click", () => {
   document.getElementById("halaman-dashboard").classList.add("hidden");
   document.getElementById("halaman-presensi").classList.remove("hidden");
@@ -98,9 +95,6 @@ document.getElementById("btn-keluar").addEventListener("click", () => {
   document.getElementById("halaman-login").classList.remove("hidden");
 });
 
-// =====================================
-// NAVIGASI ADMIN 
-// =====================================
 document.getElementById("btn-akses-admin").addEventListener("click", () => {
   document.getElementById("halaman-login").classList.add("hidden");
   document.getElementById("halaman-login-admin").classList.remove("hidden");
@@ -116,7 +110,20 @@ document.getElementById("btn-keluar-admin").addEventListener("click", () => {
   document.getElementById("halaman-login").classList.remove("hidden");
 });
 
-// 5. Fungsi Mengambil Data Siswa dari GAS
+const semuaTombolKembali = document.querySelectorAll(".btn-kembali-dashboard");
+semuaTombolKembali.forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.getElementById("halaman-presensi").classList.add("hidden");
+    document.getElementById("halaman-proyek").classList.add("hidden");
+    document.getElementById("halaman-kelompok").classList.add("hidden");
+    document.getElementById("halaman-progres").classList.add("hidden");
+    document.getElementById("halaman-dashboard").classList.remove("hidden");
+  });
+});
+
+// =====================================
+// DATA SISWA & FORMULIR GURU
+// =====================================
 async function loadDataSiswa(kelasTarget) {
   const wadahSiswa = document.getElementById("list-siswa");
   wadahSiswa.innerHTML = '<p class="text-sm text-gray-500 text-center italic py-4">Menarik data siswa...</p>';
@@ -138,7 +145,6 @@ async function loadDataSiswa(kelasTarget) {
   }
 }
 
-// 6. Fungsi Menampilkan Siswa ke Layar
 function renderListSiswa() {
   const wadahSiswa = document.getElementById("list-siswa");
   wadahSiswa.innerHTML = ""; 
@@ -168,19 +174,6 @@ function renderListSiswa() {
   });
 }
 
-// 7. Tombol Kembali ke Dashboard (Berlaku untuk semua tombol kembali)
-const semuaTombolKembali = document.querySelectorAll(".btn-kembali-dashboard");
-semuaTombolKembali.forEach(btn => {
-  btn.addEventListener("click", () => {
-    document.getElementById("halaman-presensi").classList.add("hidden");
-    document.getElementById("halaman-proyek").classList.add("hidden");
-    document.getElementById("halaman-kelompok").classList.add("hidden");
-    document.getElementById("halaman-progres").classList.add("hidden");
-    document.getElementById("halaman-dashboard").classList.remove("hidden");
-  });
-});
-
-// 8. Logika Simpan Presensi 
 document.getElementById("form-presensi").addEventListener("submit", async function(event) {
   event.preventDefault(); 
   const tombolSimpan = event.target.querySelector('button[type="submit"]');
@@ -211,13 +204,14 @@ document.getElementById("form-presensi").addEventListener("submit", async functi
       })
     });
     const result = await response.json();
-    if (result.status === "success") {
+    if (result && result.status === "success") {
       alert("Hore! Data presensi dan materi berhasil disimpan ke sistem.");
       document.getElementById("halaman-presensi").classList.add("hidden");
       document.getElementById("halaman-dashboard").classList.remove("hidden");
       document.getElementById("form-presensi").reset();
     } else {
-      alert("Gagal menyimpan: " + result.message);
+      let msg = (result && result.message) ? result.message : "Kesalahan backend.";
+      alert("Gagal menyimpan: " + msg);
     }
   } catch (error) {
     alert("Koneksi bermasalah. Pastikan internet lancar.");
@@ -228,7 +222,6 @@ document.getElementById("form-presensi").addEventListener("submit", async functi
   }
 });
 
-// 9. Logika Simpan Inisiasi Proyek Baru
 document.getElementById("form-proyek").addEventListener("submit", async function(event) {
   event.preventDefault(); 
   const tombolSimpan = event.target.querySelector('button[type="submit"]');
@@ -265,7 +258,6 @@ document.getElementById("form-proyek").addEventListener("submit", async function
   }
 });
 
-// 10. Fungsi Menampilkan Siswa untuk Dipilih (Filter Menyala)
 function renderSiswaKelompok() {
   const wadahSiswa = document.getElementById("list-siswa-kelompok");
   wadahSiswa.innerHTML = ""; 
@@ -292,7 +284,6 @@ function renderSiswaKelompok() {
   });
 }
 
-// 11. Fungsi Mengambil Daftar Proyek
 async function loadProyekKelas() {
   const selectProyek = document.getElementById("select-proyek-kelompok");
   selectProyek.innerHTML = '<option value="">-- Memuat Proyek... --</option>';
@@ -318,7 +309,6 @@ async function loadProyekKelas() {
   }
 }
 
-// 12. Logika Simpan Pembagian Kelompok
 document.getElementById("form-kelompok").addEventListener("submit", async function(event) {
   event.preventDefault(); 
   const tombolSimpan = event.target.querySelector('button[type="submit"]');
@@ -369,11 +359,6 @@ document.getElementById("form-kelompok").addEventListener("submit", async functi
   }
 });
 
-// =====================================
-// HALAMAN PROGRES 
-// =====================================
-
-// 13. Load Data Kelompok untuk Dropdown Progres
 async function loadKelompokProgres() {
   const selectKelompok = document.getElementById("select-kelompok-progres");
   selectKelompok.innerHTML = '<option value="">-- Memuat Kelompok... --</option>';
@@ -399,7 +384,6 @@ async function loadKelompokProgres() {
   }
 }
 
-// 14. Simpan Progres
 document.getElementById("form-progres").addEventListener("submit", async function(event) {
   event.preventDefault(); 
   const tombolSimpan = event.target.querySelector('button[type="submit"]');
@@ -445,9 +429,8 @@ document.getElementById("form-progres").addEventListener("submit", async functio
 });
 
 // =====================================
-// HALAMAN ADMIN 
+// HALAMAN ADMIN & SUPERVISI
 // =====================================
-
 document.getElementById("form-login-admin").addEventListener("submit", function(event) {
   event.preventDefault();
   const pass = document.getElementById("input-pass-admin").value;
@@ -472,18 +455,30 @@ function switchAdminTab(tabId) {
   activeBtn.className = "admin-tab-btn px-4 py-2 font-semibold text-blue-600 border-b-2 border-blue-600 rounded-t-lg bg-blue-50";
 }
 
-// --- 1. Fungsi Menarik Data Admin (Default ke Hari Ini: 3 Agustus 2026) ---
+// 1. Fungsi Filter Jenjang
+function filterJenjang(jenjang) {
+  state.currentJenjang = jenjang;
+  
+  document.querySelectorAll('.btn-jenjang').forEach(btn => {
+    if ((jenjang === 'ALL' && btn.textContent === 'Semua') || btn.textContent.includes(jenjang)) {
+      btn.className = "btn-jenjang px-4 py-1.5 bg-blue-600 text-white rounded-lg text-sm font-semibold shadow transition";
+    } else {
+      btn.className = "btn-jenjang px-4 py-1.5 bg-gray-200 text-gray-700 rounded-lg text-sm font-semibold hover:bg-gray-300 transition";
+    }
+  });
+
+  renderSupervisi();
+}
+
 async function loadAdminData() {
   const datePicker = document.getElementById("filter-date-supervisi");
   
-  // Otomatis set ke tanggal hari ini (2026-08-03)
   const today = new Date();
   const yyyy = today.getFullYear();
   const mm = String(today.getMonth() + 1).padStart(2, '0');
   const dd = String(today.getDate()).padStart(2, '0');
   datePicker.value = `${yyyy}-${mm}-${dd}`;
 
-  // Trigger agar kotak update otomatis saat kalender diubah
   datePicker.onchange = function() {
     renderSupervisi();
   };
@@ -514,17 +509,13 @@ async function loadAdminData() {
   }
 }
 
-// --- 2. Fungsi Menampilkan Kotak Supervisi (Menampung Semua Guru yang Mengisi) ---
 function renderSupervisi() {
   if (!state.adminData) return;
 
-  const inputVal = document.getElementById("filter-date-supervisi").value; // Format selalu "YYYY-MM-DD" dari HTML
+  const inputVal = document.getElementById("filter-date-supervisi").value; 
   if (!inputVal) return;
 
-  // Pecah string "2026-08-03" menjadi komponen
   const [targetY, targetM, targetD] = inputVal.split("-"); 
-  
-  // Ambil nama bulan singkatan Bahasa Inggris
   const arrBulanEn = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   const targetBulanTeks = arrBulanEn[parseInt(targetM) - 1]; 
   const targetD_unpad = String(parseInt(targetD)); 
@@ -536,26 +527,26 @@ function renderSupervisi() {
     if (!p.tgl) return false;
     let tStr = String(p.tgl);
 
-    // Filter 1: Cek langsung format ISO
     if (tStr.includes(inputVal)) return true;
-
-    // Filter 2: Mencari kata bulan, tahun, dan tanggal
     if (tStr.includes(targetY) && tStr.includes(targetBulanTeks)) {
-      if (tStr.includes(` ${targetD} `) || tStr.includes(` ${targetD_unpad} `)) {
-        return true;
-      }
+      if (tStr.includes(` ${targetD} `) || tStr.includes(` ${targetD_unpad} `)) return true;
     }
-
-    // Filter 3: Cek format angka lokal "03/08/2026"
-    if (tStr.includes(`${targetD}/${targetM}/${targetY}`) || tStr.includes(`${targetD_unpad}/${parseInt(targetM)}/${targetY}`)) {
-      return true;
-    }
+    if (tStr.includes(`${targetD}/${targetM}/${targetY}`) || tStr.includes(`${targetD_unpad}/${parseInt(targetM)}/${targetY}`)) return true;
 
     return false;
   });
 
-  state.adminData.daftarKelas.forEach(kls => {
-    // Ambil SEMUA laporan untuk kelas ini pada tanggal terpilih
+  // Filter kelas berdasarkan tombol Jenjang yang ditekan
+  const daftarKelasFiltered = state.adminData.daftarKelas.filter(kls => {
+    let klsStr = String(kls).trim();
+    if (state.currentJenjang === "ALL") return true;
+    if (state.currentJenjang === "X" && klsStr.startsWith("X-")) return true;
+    if (state.currentJenjang === "XI" && klsStr.startsWith("XI ")) return true; 
+    if (state.currentJenjang === "XII" && klsStr.startsWith("XII ")) return true;
+    return false;
+  });
+
+  daftarKelasFiltered.forEach(kls => {
     const reportsForClass = presensiHariIni.filter(p => String(p.kelas).trim() === String(kls).trim());
     const isReported = reportsForClass.length > 0;
 
@@ -563,10 +554,7 @@ function renderSupervisi() {
       <h4 class="font-bold text-lg mb-2">${kls}</h4>`;
 
     if (isReported) {
-      // Ambil laporan pertama untuk rincian materi & kehadiran
       const reportData = reportsForClass[0];
-      
-      // Gabungkan seluruh nama guru yang mengisi di kelas ini
       const semuaGuru = reportsForClass.map(p => p.guru).filter(Boolean).join(", ");
       const jumlahLaporan = reportsForClass.length > 1 ? ` (${reportsForClass.length} Laporan)` : "";
 
@@ -586,6 +574,7 @@ function renderSupervisi() {
     grid.innerHTML += cardHTML;
   });
 }
+
 function renderRekapJurnal() {
   if(!state.adminData) return;
   const tbody = document.getElementById("tbody-rekap-jurnal");
