@@ -502,34 +502,45 @@ async function loadAdminData() {
   }
 }
 
-// --- 2. Fungsi Menampilkan Kotak Supervisi (Kebal Format Date & Timestamp) ---
+// --- 2. Fungsi Menampilkan Kotak Supervisi (Presisi Parsing Date) ---
 function renderSupervisi() {
-  if(!state.adminData) return;
-  
-  const targetDate = document.getElementById("filter-date-supervisi").value; // Format input: YYYY-MM-DD
-  if (!targetDate) return;
+  if (!state.adminData) return;
 
-  const splitted = targetDate.split("-");
-  const formattedTargetDDMM = `${splitted[2]}/${splitted[1]}/${splitted[0]}`; // Format: DD/MM/YYYY
-  const formattedTargetDDMMYY = `${splitted[2]}/${splitted[1]}/${splitted[0].slice(2)}`; // Format: DD/MM/YY
+  const inputVal = document.getElementById("filter-date-supervisi").value; // Format: YYYY-MM-DD
+  if (!inputVal) return;
+
+  // Split tanggal dari input picker (misal: "2026-03-08")
+  const [targetYear, targetMonth, targetDay] = inputVal.split("-").map(Number);
 
   const grid = document.getElementById("grid-supervisi");
   grid.innerHTML = "";
 
-  // Filter presensi yang cocok dengan tanggal target (mencakup YYYY-MM-DD, DD/MM/YYYY, maupun format ISO Date)
+  // Filter presensi dengan membandingkan Tahun, Bulan (0-index), dan Tanggal secara akurat
   const presensiHariIni = state.adminData.presensi.filter(p => {
-    let tStr = String(p.tgl);
-    return tStr.includes(targetDate) || 
-           tStr.includes(formattedTargetDDMM) || 
-           tStr.includes(formattedTargetDDMMYY);
+    if (!p.tgl) return false;
+    
+    // Convert tanggal dari Sheets/GAS ke Object Date
+    const d = new Date(p.tgl);
+    
+    // Cek apakah parsing berhasil (Valid Date)
+    if (isNaN(d.getTime())) {
+      // Fallback manual jika objek Date gagal: cari pencocokan string YYYY-MM-DD atau DD/MM/YYYY
+      const tStr = String(p.tgl);
+      return tStr.includes(inputVal);
+    }
+
+    // Cocokkan komponen tanggalnya
+    return d.getFullYear() === targetYear && 
+           (d.getMonth() + 1) === targetMonth && 
+           d.getDate() === targetDay;
   });
-  
+
   const kelasTeraport = presensiHariIni.map(p => String(p.kelas).trim());
 
   state.adminData.daftarKelas.forEach(kls => {
     const isReported = kelasTeraport.includes(String(kls).trim());
     const reportData = isReported ? presensiHariIni.find(p => String(p.kelas).trim() === String(kls).trim()) : null;
-    
+
     let cardHTML = `<div class="border rounded-xl p-4 ${isReported ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}">
       <h4 class="font-bold text-lg mb-2">${kls}</h4>`;
 
