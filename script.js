@@ -1,4 +1,4 @@
-// 1. Simpan URL API dari Google Apps Script (GANTI DENGAN URL DEPLOY ANDA YANG BARU)
+// 1. Simpan URL API dari Google Apps Script
 const API_URL = "https://script.google.com/macros/s/AKfycbz39TvSCyZyTim_f_8vsd0H93r25IJgnnUcZT8cK2qZDAlpQYqJtghRGdmBsKU1yl4/exec"; 
 
 // 2. Event Listener: Menjalankan fungsi saat halaman web pertama kali selesai dimuat
@@ -99,7 +99,7 @@ document.getElementById("btn-keluar").addEventListener("click", () => {
 });
 
 // =====================================
-// NAVIGASI ADMIN (BARU)
+// NAVIGASI ADMIN 
 // =====================================
 document.getElementById("btn-akses-admin").addEventListener("click", () => {
   document.getElementById("halaman-login").classList.add("hidden");
@@ -370,7 +370,7 @@ document.getElementById("form-kelompok").addEventListener("submit", async functi
 });
 
 // =====================================
-// HALAMAN PROGRES (LOGIKA BARU)
+// HALAMAN PROGRES 
 // =====================================
 
 // 13. Load Data Kelompok untuk Dropdown Progres
@@ -445,7 +445,7 @@ document.getElementById("form-progres").addEventListener("submit", async functio
 });
 
 // =====================================
-// HALAMAN ADMIN (LOGIKA BARU)
+// HALAMAN ADMIN 
 // =====================================
 
 document.getElementById("form-login-admin").addEventListener("submit", function(event) {
@@ -508,6 +508,7 @@ async function loadAdminData() {
       renderRekapProgres();
     }
   } catch (error) {
+    console.error("Error Admin:", error); // Bantuan log untuk cek di browser
     alert("Gagal menarik data admin dari Google Sheets");
   }
 }
@@ -579,6 +580,28 @@ function renderSupervisi() {
     grid.innerHTML += cardHTML;
   });
 }
+
+function renderRekapJurnal() {
+  if(!state.adminData) return;
+  const tbody = document.getElementById("tbody-rekap-jurnal");
+  tbody.innerHTML = "";
+  
+  if(state.adminData.presensi.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4" class="px-4 py-3 text-center">Belum ada data jurnal.</td></tr>';
+    return;
+  }
+  state.adminData.presensi.forEach(p => {
+    tbody.innerHTML += `
+      <tr class="border-b hover:bg-gray-50">
+        <td class="px-4 py-3 whitespace-nowrap">${p.tgl}<br><span class="text-xs text-gray-400">${p.jam}</span></td>
+        <td class="px-4 py-3 font-semibold">${p.kelas}</td>
+        <td class="px-4 py-3">${p.guru}</td>
+        <td class="px-4 py-3 text-xs">${p.materi}</td>
+      </tr>
+    `;
+  });
+}
+
 function renderRekapProgres() {
   if(!state.adminData) return;
   const tbody = document.getElementById("tbody-rekap-progres");
