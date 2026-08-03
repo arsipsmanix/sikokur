@@ -160,6 +160,7 @@ function renderListSiswa() {
           <option value="Sakit">Sakit</option>
           <option value="Izin">Izin</option>
           <option value="Alpa">Alpa</option>
+          <option value="Rekom">Rekom</option>
         </select>
       </div>
     `;
