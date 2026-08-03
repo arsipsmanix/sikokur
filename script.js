@@ -472,19 +472,21 @@ function switchAdminTab(tabId) {
   activeBtn.className = "admin-tab-btn px-4 py-2 font-semibold text-blue-600 border-b-2 border-blue-600 rounded-t-lg bg-blue-50";
 }
 
-// --- 1. Fungsi Menarik Data Admin (Sudah Dilengkapi Trigger Perubahan Tanggal) ---
+// --- 1. Fungsi Menarik Data Admin (Default ke Hari Ini: 3 Agustus 2026) ---
 async function loadAdminData() {
   const datePicker = document.getElementById("filter-date-supervisi");
   
-  // Set tanggal default ke hari ini
-  if (!datePicker.value) {
-    datePicker.value = new Date().toISOString().split('T')[0];
-  }
+  // Otomatis set ke tanggal hari ini (2026-08-03)
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, '0');
+  const dd = String(today.getDate()).padStart(2, '0');
+  datePicker.value = `${yyyy}-${mm}-${dd}`;
 
-  // SANGAT PENTING: Trigger agar kotak update otomatis saat kalender diklik/diubah
-  datePicker.addEventListener("change", function() {
+  // Trigger agar kotak update otomatis saat kalender diubah
+  datePicker.onchange = function() {
     renderSupervisi();
-  });
+  };
 
   try {
     const response = await fetch(API_URL, {
@@ -496,7 +498,6 @@ async function loadAdminData() {
     if (result.status === "success") {
       state.adminData = result.data;
       
-      // Ambil daftar kelas otomatis dari pilihan di halaman login
       let semuaKelas = [];
       document.querySelectorAll("#select-kelas option").forEach(opt => {
         if (opt.value !== "") semuaKelas.push(opt.value);
@@ -508,7 +509,7 @@ async function loadAdminData() {
       renderRekapProgres();
     }
   } catch (error) {
-    console.error("Error Admin:", error); // Bantuan log untuk cek di browser
+    console.error("Error Admin:", error);
     alert("Gagal menarik data admin dari Google Sheets");
   }
 }
