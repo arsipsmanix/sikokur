@@ -502,35 +502,40 @@ async function loadAdminData() {
   }
 }
 
-// --- 2. Fungsi Menampilkan Kotak Supervisi (Anti Invalid Date / Kebal Timezone String) ---
+// --- 2. Fungsi Menampilkan Kotak Supervisi (Flexible Multi-Matching) ---
 function renderSupervisi() {
   if (!state.adminData) return;
 
-  const inputVal = document.getElementById("filter-date-supervisi").value; // Format input: YYYY-MM-DD
+  const inputVal = document.getElementById("filter-date-supervisi").value; // Nilai HTML: "YYYY-MM-DD"
   if (!inputVal) return;
 
-  const [targetYear, targetMonth, targetDay] = inputVal.split("-").map(Number);
+  const [y, m, d] = inputVal.split("-"); // y="2026", m="08", d="03"
+  
+  // Kamus Bulan untuk mencocokkan string Sun Mar 08 2026
+  const bulanEn = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const namaBulan = bulanEn[parseInt(m) - 1]; // misal "03" -> "Mar", "08" -> "Aug"
+  
+  const padDay = d.padStart(2, '0'); // "08"
+  const unpadDay = String(parseInt(d)); // "8"
 
   const grid = document.getElementById("grid-supervisi");
   grid.innerHTML = "";
 
   const presensiHariIni = state.adminData.presensi.filter(p => {
     if (!p.tgl) return false;
+    let tStr = String(p.tgl);
 
-    let rawStr = String(p.tgl);
+    // Cek 1: Format ISO / YYYY-MM-DD (misal: "2026-03-08")
+    if (tStr.includes(inputVal)) return true;
 
-    // 1. Cek jika string mentah langsung mengandung format YYYY-MM-DD
-    if (rawStr.includes(inputVal)) return true;
+    // Cek 2: Format String GAS Bahasa Inggris (misal: "Sun Mar 08 2026")
+    if (tStr.includes(namaBulan) && tStr.includes(y) && (tStr.includes(` ${padDay} `) || tStr.includes(` ${unpadDay} `))) {
+      return true;
+    }
 
-    // 2. Bersihkan teks kurung zona waktu seperti "(Waktu Indochina)" yang merusak Date parsing
-    let cleanStr = rawStr.replace(/\s*\([^)]*\)/g, '');
-    let d = new Date(cleanStr);
-
-    // 3. Jika Date valid, cocokkan Tahun, Bulan (0-indexed), dan Tanggal
-    if (!isNaN(d.getTime())) {
-      return d.getFullYear() === targetYear && 
-             (d.getMonth() + 1) === targetMonth && 
-             d.getDate() === targetDay;
+    // Cek 3: Format Lokal Indonesia (misal: "08/03/2026" atau "8/3/2026")
+    if (tStr.includes(`${padDay}/${m}/${y}`) || tStr.includes(`${unpadDay}/${parseInt(m)}/${y}`)) {
+      return true;
     }
 
     return false;
@@ -562,7 +567,6 @@ function renderSupervisi() {
     grid.innerHTML += cardHTML;
   });
 }
-
 function renderRekapJurnal() {
   if(!state.adminData) return;
   const tbody = document.getElementById("tbody-rekap-jurnal");
