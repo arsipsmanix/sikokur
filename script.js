@@ -472,10 +472,20 @@ function switchAdminTab(tabId) {
   activeBtn.className = "admin-tab-btn px-4 py-2 font-semibold text-blue-600 border-b-2 border-blue-600 rounded-t-lg bg-blue-50";
 }
 
-// --- 1. Fungsi Menarik Data Admin (Sudah Dinamis Baca Kelas) ---
+// --- 1. Fungsi Menarik Data Admin (Sudah Dilengkapi Trigger Perubahan Tanggal) ---
 async function loadAdminData() {
-  document.getElementById("filter-date-supervisi").value = new Date().toISOString().split('T')[0];
+  const datePicker = document.getElementById("filter-date-supervisi");
   
+  // Set tanggal default ke hari ini
+  if (!datePicker.value) {
+    datePicker.value = new Date().toISOString().split('T')[0];
+  }
+
+  // SANGAT PENTING: Trigger agar kotak update otomatis saat kalender diklik/diubah
+  datePicker.addEventListener("change", function() {
+    renderSupervisi();
+  });
+
   try {
     const response = await fetch(API_URL, {
       method: "POST",
@@ -502,40 +512,42 @@ async function loadAdminData() {
   }
 }
 
-// --- 2. Fungsi Menampilkan Kotak Supervisi (Flexible Multi-Matching) ---
+// --- 2. Fungsi Menampilkan Kotak Supervisi (Algoritma Pembersih Tanggal Absolut) ---
 function renderSupervisi() {
   if (!state.adminData) return;
 
   const inputVal = document.getElementById("filter-date-supervisi").value; // Nilai HTML: "YYYY-MM-DD"
   if (!inputVal) return;
 
-  const [y, m, d] = inputVal.split("-"); // y="2026", m="08", d="03"
-  
-  // Kamus Bulan untuk mencocokkan string Sun Mar 08 2026
-  const bulanEn = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  const namaBulan = bulanEn[parseInt(m) - 1]; // misal "03" -> "Mar", "08" -> "Aug"
-  
-  const padDay = d.padStart(2, '0'); // "08"
-  const unpadDay = String(parseInt(d)); // "8"
-
   const grid = document.getElementById("grid-supervisi");
   grid.innerHTML = "";
 
+  // Filter presensi dengan algoritma pembersihan string
   const presensiHariIni = state.adminData.presensi.filter(p => {
     if (!p.tgl) return false;
     let tStr = String(p.tgl);
 
-    // Cek 1: Format ISO / YYYY-MM-DD (misal: "2026-03-08")
+    // Cek 1: Jika string mentahnya langsung mengandung format inputVal
     if (tStr.includes(inputVal)) return true;
 
-    // Cek 2: Format String GAS Bahasa Inggris (misal: "Sun Mar 08 2026")
-    if (tStr.includes(namaBulan) && tStr.includes(y) && (tStr.includes(` ${padDay} `) || tStr.includes(` ${unpadDay} `))) {
-      return true;
-    }
+    // Cek 2: Konversi ke Format Baku
+    try {
+      // Potong paksa teks aneh seperti "(Waktu Indochina)" agar tidak error
+      let cleanStr = tStr.split('(')[0].trim();
+      let d = new Date(cleanStr);
 
-    // Cek 3: Format Lokal Indonesia (misal: "08/03/2026" atau "8/3/2026")
-    if (tStr.includes(`${padDay}/${m}/${y}`) || tStr.includes(`${unpadDay}/${parseInt(m)}/${y}`)) {
-      return true;
+      // Jika berhasil jadi format Waktu yang valid
+      if (!isNaN(d.getTime())) {
+        let yyyy = d.getFullYear();
+        let mm = String(d.getMonth() + 1).padStart(2, '0');
+        let dd = String(d.getDate()).padStart(2, '0');
+        
+        let normalizedDate = `${yyyy}-${mm}-${dd}`; // Jadikan YYYY-MM-DD
+        
+        if (normalizedDate === inputVal) return true;
+      }
+    } catch(e) {
+      console.log("Error parsing date:", e);
     }
 
     return false;
@@ -567,27 +579,6 @@ function renderSupervisi() {
     grid.innerHTML += cardHTML;
   });
 }
-function renderRekapJurnal() {
-  if(!state.adminData) return;
-  const tbody = document.getElementById("tbody-rekap-jurnal");
-  tbody.innerHTML = "";
-  
-  if(state.adminData.presensi.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="4" class="px-4 py-3 text-center">Belum ada data jurnal.</td></tr>';
-    return;
-  }
-  state.adminData.presensi.forEach(p => {
-    tbody.innerHTML += `
-      <tr class="border-b hover:bg-gray-50">
-        <td class="px-4 py-3 whitespace-nowrap">${p.tgl}<br><span class="text-xs text-gray-400">${p.jam}</span></td>
-        <td class="px-4 py-3 font-semibold">${p.kelas}</td>
-        <td class="px-4 py-3">${p.guru}</td>
-        <td class="px-4 py-3 text-xs">${p.materi}</td>
-      </tr>
-    `;
-  });
-}
-
 function renderRekapProgres() {
   if(!state.adminData) return;
   const tbody = document.getElementById("tbody-rekap-progres");
