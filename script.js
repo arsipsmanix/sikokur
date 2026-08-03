@@ -502,25 +502,33 @@ async function loadAdminData() {
   }
 }
 
-// --- 2. Fungsi Menampilkan Kotak Supervisi (Sudah Ada Info Absen) ---
+// --- 2. Fungsi Menampilkan Kotak Supervisi (Kebal Format Date & Timestamp) ---
 function renderSupervisi() {
   if(!state.adminData) return;
   
-  const targetDate = document.getElementById("filter-date-supervisi").value; 
-  // Konversi format date input "YYYY-MM-DD" ke "DD/MM/YYYY" agar cocok dgn sheet
+  const targetDate = document.getElementById("filter-date-supervisi").value; // Format input: YYYY-MM-DD
+  if (!targetDate) return;
+
   const splitted = targetDate.split("-");
-  const formattedTarget = `${splitted[2]}/${splitted[1]}/${splitted[0]}`;
+  const formattedTargetDDMM = `${splitted[2]}/${splitted[1]}/${splitted[0]}`; // Format: DD/MM/YYYY
+  const formattedTargetDDMMYY = `${splitted[2]}/${splitted[1]}/${splitted[0].slice(2)}`; // Format: DD/MM/YY
 
   const grid = document.getElementById("grid-supervisi");
   grid.innerHTML = "";
 
-  // Filter presensi yang memuat tanggal tersebut
-  const presensiHariIni = state.adminData.presensi.filter(p => p.tgl.includes(formattedTarget) || p.tgl.includes(targetDate));
-  const kelasTeraport = presensiHariIni.map(p => p.kelas.trim());
+  // Filter presensi yang cocok dengan tanggal target (mencakup YYYY-MM-DD, DD/MM/YYYY, maupun format ISO Date)
+  const presensiHariIni = state.adminData.presensi.filter(p => {
+    let tStr = String(p.tgl);
+    return tStr.includes(targetDate) || 
+           tStr.includes(formattedTargetDDMM) || 
+           tStr.includes(formattedTargetDDMMYY);
+  });
+  
+  const kelasTeraport = presensiHariIni.map(p => String(p.kelas).trim());
 
   state.adminData.daftarKelas.forEach(kls => {
-    const isReported = kelasTeraport.includes(kls);
-    const reportData = isReported ? presensiHariIni.find(p => p.kelas.trim() === kls) : null;
+    const isReported = kelasTeraport.includes(String(kls).trim());
+    const reportData = isReported ? presensiHariIni.find(p => String(p.kelas).trim() === String(kls).trim()) : null;
     
     let cardHTML = `<div class="border rounded-xl p-4 ${isReported ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}">
       <h4 class="font-bold text-lg mb-2">${kls}</h4>`;
