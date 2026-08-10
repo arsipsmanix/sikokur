@@ -498,6 +498,13 @@ async function loadAdminData() {
         if (opt.value !== "") semuaKelas.push(opt.value);
       });
       state.adminData.daftarKelas = semuaKelas; 
+
+      // Isi opsi kelas untuk Tab Edit Kelompok
+      const selectKelasEdit = document.getElementById("select-kelas-edit");
+      selectKelasEdit.innerHTML = '<option value="">-- Pilih Kelas --</option>';
+      semuaKelas.forEach(kls => {
+        selectKelasEdit.innerHTML += `<option value="${kls}">${kls}</option>`;
+      });
       
       renderSupervisi();
       renderRekapJurnal();
@@ -646,4 +653,121 @@ function cetakLaporan(jenis) {
   const table = printContent.querySelector("table");
   table.className = "print-table";
   window.print();
+}
+// =====================================
+// FITUR EDIT KELOMPOK (ADMIN)
+// =====================================
+let editKelompokState = {
+  siswa: [],
+  kelompok: []
+};
+
+async function loadEditKelompok() {
+  const kelasTarget = document.getElementById("select-kelas-edit").value;
+  if (!kelasTarget) return alert("Pilih kelas terlebih dahulu!");
+  
+  const tbody = document.getElementById("tbody-edit-kelompok");
+  tbody.innerHTML = '<tr><td colspan="3" class="px-4 py-8 text-center">Menarik data dari server...</td></tr>';
+  
+  try {
+    const response = await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({ action: "getEditKelompokData", kelas: kelasTarget })
+    });
+    const result = await response.json();
+    
+    if (result.status === "success") {
+      editKelompokState.siswa = result.data.siswa;
+      editKelompokState.kelompok = result.data.kelompok;
+      renderEditKelompok();
+    } else {
+      tbody.innerHTML = `<tr><td colspan="3" class="px-4 py-4 text-center text-red-500">Gagal memuat: ${result.message}</td></tr>`;
+    }
+  } catch (error) {
+     tbody.innerHTML = `<tr><td colspan="3" class="px-4 py-4 text-center text-red-500">Koneksi bermasalah</td></tr>`;
+  }
+}
+
+function renderEditKelompok() {
+  const tbody = document.getElementById("tbody-edit-kelompok");
+  tbody.innerHTML = "";
+  
+  if (editKelompokState.siswa.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="3" class="px-4 py-4 text-center">Tidak ada data siswa di kelas ini.</td></tr>';
+    return;
+  }
+
+  // Siapkan opsi dropdown kelompok
+  let opsiKelompokHTML = '<option value="">-- Belum Masuk Kelompok --</option>';
+  editKelompokState.kelompok.forEach(kel => {
+    opsiKelompokHTML += `<option value="${kel.id_kelompok}">${kel.nama_kelompok} (${kel.nama_proyek})</option>`;
+  });
+  
+  // Render tabel
+  editKelompokState.siswa.forEach(siswa => {
+    const tr = document.createElement("tr");
+    tr.className = "border-b hover:bg-gray-50";
+    
+    tr.innerHTML = `
+      <td class="px-4 py-3 font-semibold">${siswa.nama}<br><span class="text-xs text-gray-400">${siswa.id_siswa}</span></td>
+      <td class="px-4 py-3">
+        <select id="select-kel-${siswa.id_siswa}" class="border border-gray-300 rounded p-2 w-full text-sm outline-none focus:ring-1 focus:ring-blue-500">
+          ${opsiKelompokHTML}
+        </select>
+      </td>
+      <td class="px-4 py-3 text-center">
+        <button onclick="simpanEditKelompok('${siswa.id_siswa}')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded text-xs font-semibold shadow transition">Update</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+    
+    // Set pilihan dropdown saat ini sesuai database
+    document.getElementById(`select-kel-${siswa.id_siswa}`).value = siswa.id_kelompok || "";
+  });
+}
+
+async function simpanEditKelompok(idSiswa) {
+  const selectElement = document.getElementById(`select-kel-${idSiswa}`);
+  const idKelompokBaru = selectElement.value;
+  const btn = selectElement.parentElement.nextElementSibling.querySelector('button');
+  
+  const textAsli = btn.textContent;
+  btn.textContent = "Wait..";
+  btn.disabled = true;
+  btn.classList.replace("bg-blue-600", "bg-gray-400");
+  
+  try {
+    const response = await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "updateSiswaKelompok",
+        data: {
+          id_siswa: idSiswa,
+          id_kelompok: idKelompokBaru
+        }
+      })
+    });
+    const result = await response.json();
+    
+    if (result.status === "success") {
+      // Update warna tombol sukses
+      btn.textContent = "Sukses!";
+      btn.classList.replace("bg-gray-400", "bg-green-500");
+      setTimeout(() => {
+        btn.textContent = textAsli;
+        btn.classList.replace("bg-green-500", "bg-blue-600");
+        btn.disabled = false;
+      }, 2000);
+    } else {
+      alert("Gagal: " + result.message);
+      btn.textContent = textAsli;
+      btn.classList.replace("bg-gray-400", "bg-blue-600");
+      btn.disabled = false;
+    }
+  } catch (error) {
+    alert("Koneksi bermasalah.");
+    btn.textContent = textAsli;
+    btn.classList.replace("bg-gray-400", "bg-blue-600");
+    btn.disabled = false;
+  }
 }
