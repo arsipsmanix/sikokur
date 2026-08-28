@@ -28,6 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function loadDataAwal() {
   const selectGuru = document.getElementById("select-guru");
+  const loaderOverlay = document.getElementById("app-loader"); // Ambil elemen loader
   selectGuru.innerHTML = '<option value="">Sedang memuat data...</option>';
 
   try {
@@ -55,6 +56,12 @@ async function loadDataAwal() {
     }
   } catch (error) {
     selectGuru.innerHTML = '<option value="">Koneksi bermasalah</option>';
+  } finally {
+    // SEMBUNYIKAN LOADER KETIKA SELESAI (Berhasil atau Gagal)
+    if (loaderOverlay) {
+      loaderOverlay.classList.add("opacity-0", "pointer-events-none");
+      setTimeout(() => loaderOverlay.style.display = "none", 300); // Hilangkan elemen dari DOM setelah animasi transisi
+    }
   }
 }
 
