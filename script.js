@@ -419,11 +419,33 @@ async function loadAdminData() {
   }
 }
 
+// ==========================================
+// ALAT PEMBERSIH TANGGAL (HELPER)
+// ==========================================
+function formatTanggal(rawDate) {
+  if (!rawDate) return "";
+  let d = new Date(rawDate);
+  if (isNaN(d)) return String(rawDate).split(" ")[0]; // Jika gagal, kembalikan teks aslinya
+  let y = d.getFullYear();
+  let m = String(d.getMonth() + 1).padStart(2, '0');
+  let day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
 // -- A. SUPERVISI HARIAN --
 function filterJenjang(jenjang) {
   state.currentJenjang = jenjang;
   document.querySelectorAll('.btn-jenjang').forEach(btn => {
-    if ((jenjang === 'ALL' && btn.textContent === 'Semua') || btn.textContent.includes(jenjang)) {
+    let txt = btn.textContent.trim();
+    let isMatch = false;
+
+    // Logika Pencocokan Persis (Exact Match)
+    if (jenjang === 'ALL' && txt === 'Semua') isMatch = true;
+    else if (jenjang === 'X' && txt === 'Kelas X') isMatch = true;
+    else if (jenjang === 'XI' && txt === 'Kelas XI') isMatch = true;
+    else if (jenjang === 'XII' && txt === 'Kelas XII') isMatch = true;
+
+    if (isMatch) {
       btn.className = "btn-jenjang px-5 py-2 bg-blue-600 text-white rounded-xl text-sm font-bold shadow-md transition";
     } else {
       btn.className = "btn-jenjang px-5 py-2 bg-gray-100 text-gray-600 hover:bg-gray-200 rounded-xl text-sm font-bold transition";
@@ -440,7 +462,10 @@ function renderSupervisi() {
   const grid = document.getElementById("grid-supervisi");
   grid.innerHTML = "";
 
-  const presensiHariIni = state.adminData.presensi.filter(p => String(p.tgl).includes(inputVal));
+  // Gunakan helper pembersih tanggal agar 100% cocok dengan input kalender
+  const presensiHariIni = state.adminData.presensi.filter(p => {
+    return formatTanggal(p.tgl) === inputVal;
+  });
 
   const daftarKelasFiltered = state.semuaKelas.filter(kls => {
     let klsStr = String(kls).trim();
@@ -492,9 +517,10 @@ function renderRekapJurnal() {
   }
   
   dataTampil.forEach(p => {
+    let tglBersih = formatTanggal(p.tgl); // Ubah tanggal panjang jadi pendek
     tbody.innerHTML += `
       <tr class="border-b border-gray-100 hover:bg-blue-50 transition">
-        <td class="px-5 py-4 whitespace-nowrap"><span class="font-bold text-gray-800">${p.tgl}</span><br><span class="text-[11px] text-gray-500">${p.jam}</span></td>
+        <td class="px-5 py-4 whitespace-nowrap"><span class="font-bold text-gray-800">${tglBersih}</span><br><span class="text-[11px] text-gray-500">${p.jam}</span></td>
         <td class="px-5 py-4 text-xs font-semibold uppercase text-gray-600">${p.guru}<br><span class="text-blue-600">${p.kelas}</span></td>
         <td class="px-5 py-4 text-xs text-gray-700 italic">"${p.materi}"</td>
         <td class="px-5 py-4 text-xs text-red-600 font-medium">${p.absen}</td>
@@ -527,10 +553,11 @@ function renderRekapProgres() {
     else if(p.status === "Perencanaan") statCol = "bg-yellow-100 text-yellow-800";
     
     let nlCol = p.nilai_kelompok === "Mahir" ? "text-green-600" : (p.nilai_kelompok === "Cakap" ? "text-blue-600" : "text-orange-600");
+    let tglBersih = formatTanggal(p.tgl); // Ubah tanggal panjang jadi pendek
 
     tbody.innerHTML += `
       <tr class="border-b border-gray-100 hover:bg-green-50 transition">
-        <td class="px-4 py-4 whitespace-nowrap text-xs"><span class="font-bold">${p.tgl.split(" ")[0]}</span><br><span class="text-gray-500">${p.sesi}</span></td>
+        <td class="px-4 py-4 whitespace-nowrap text-xs"><span class="font-bold">${tglBersih}</span><br><span class="text-gray-500">${p.sesi}</span></td>
         <td class="px-4 py-4 text-xs font-bold text-gray-700">${p.proyek}<br><span class="text-gray-400 font-normal">Kls: ${p.kelas}</span></td>
         <td class="px-4 py-4 text-xs"><span class="font-bold block mb-1">${p.kelompok}</span><span class="px-2 py-0.5 text-[10px] font-bold rounded uppercase tracking-wide ${statCol}">${p.status}</span></td>
         <td class="px-4 py-4 text-xs"><span class="font-bold ${nlCol} block mb-1">Nilai: ${p.nilai_kelompok}</span><span class="text-gray-500 italic">"${p.catatan}"</span><br><span class="text-[10px] text-gray-400">By: ${p.guru}</span></td>
