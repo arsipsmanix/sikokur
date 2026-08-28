@@ -169,6 +169,7 @@ document.getElementById("form-presensi").addEventListener("submit", async functi
   const teksAsliTombol = tombolSimpan.textContent;
   
   const materi = document.getElementById("input-materi").value;
+  const jamPel = document.getElementById("input-jam").value;
   let dataKehadiran = {};
   document.querySelectorAll(".input-kehadiran").forEach(select => {
     dataKehadiran[select.getAttribute("data-idsiswa")] = select.value;
@@ -185,7 +186,7 @@ document.getElementById("form-presensi").addEventListener("submit", async functi
         action: "savePresensi",
         data: {
           kelas: state.kelas,
-          jam: "Jam Kokurikuler", 
+          jam: "Jam ke-" + jamPel, 
           nama_guru: state.guru,
           materi: materi,
           kehadiran: dataKehadiran
@@ -484,12 +485,25 @@ function renderSupervisi() {
       <h4 class="font-black text-xl mb-3 text-gray-800">${kls}</h4>`;
 
     if (isReported) {
-      const rep = reports[0];
+      // Buat daftar guru dan jamnya berjejer ke bawah
+      let listGuruHTML = reports.map(p => `
+        <p class="text-xs text-gray-700 mb-1 border-b border-gray-100 pb-1">
+          👨‍🏫 <b>${p.guru}</b> <span class="text-blue-600 font-bold ml-1">(${p.jam})</span>
+        </p>
+      `).join("");
+
+      // Ambil materi dari laporan terakhir sebagai sampel tampilan
+      const rep = reports[0]; 
+
       cardHTML += `
         <p class="text-xs bg-green-200 text-green-800 px-2 py-1 rounded inline-block font-bold mb-2">✅ DILAPORKAN</p>
-        <p class="text-xs text-gray-600 mb-1"><b>Guru:</b> ${reports.map(p => p.guru).join(", ")}</p>
-        <p class="text-xs text-gray-600 mb-1"><b>Waktu:</b> ${rep.jam}</p>
-        <p class="text-xs text-gray-700 mt-2 p-2 bg-white rounded border border-green-100 italic">"${rep.materi}"</p>
+        
+        <div class="my-2 bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
+          ${listGuruHTML}
+        </div>
+        
+        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mt-3">Materi / Uraian:</p>
+        <p class="text-xs text-gray-700 p-2 bg-gray-50 rounded border border-gray-100 italic">"${rep.materi}"</p>
       `;
     } else {
       cardHTML += `<p class="text-sm text-red-600 font-bold mt-2">❌ Belum Ada Laporan</p>`;
