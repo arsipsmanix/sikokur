@@ -695,3 +695,22 @@ function cetakLaporan(jenis) {
   printContent.querySelector("table").className = "print-table";
   window.print();
 }
+
+// ==========================================
+// 8. FUNGSI REFRESH / TARIK DATA (ADMIN)
+// ==========================================
+async function refreshDataAdmin(btnElement) {
+  // Simpan teks asli dan ubah tombol jadi status loading
+  const originalHTML = btnElement.innerHTML;
+  btnElement.innerHTML = "⏳ Memuat...";
+  btnElement.disabled = true;
+  btnElement.classList.replace("bg-blue-600", "bg-gray-400");
+
+  // Tarik data terbaru dari server
+  await loadAdminData();
+
+  // Kembalikan tombol ke kondisi semula
+  btnElement.innerHTML = originalHTML;
+  btnElement.disabled = false;
+  btnElement.classList.replace("bg-gray-400", "bg-blue-600");
+}
