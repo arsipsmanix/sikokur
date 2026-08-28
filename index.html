@@ -6,6 +6,7 @@
   <title>SiKokur9</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
+    /* Styling Khusus Untuk Cetak (Print) */
     @media print {
       body { background-color: white !important; }
       .no-print { display: none !important; }
@@ -15,80 +16,62 @@
       .print-table th { background-color: #f3f4f6 !important; -webkit-print-color-adjust: exact; }
     }
     .print-only { display: none; }
+    
+    /* Efek transisi halus untuk card */
+    .hover-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    }
   </style>
 </head>
 
-<body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen p-4">
+<body class="bg-gray-50 flex flex-col items-center justify-center min-h-screen p-4 font-sans">
 
   <!-- ========================================== -->
-  <!-- WADAH UTAMA (Card) - HALAMAN LOGIN -->
-  <div id="halaman-login" class="bg-white w-full max-w-md rounded-xl shadow-lg p-6 no-print">
-    <div class="text-center mb-6">
-      <img src="https://lh3.googleusercontent.com/u/0/d/1NmhujSqCWX3fY30wSlAe9Ur5aR0jevXc" alt="Logo SMAN 9" class="w-20 h-20 mx-auto mb-3 object-contain">
-      <h1 class="text-2xl font-bold text-gray-800">Kokurikuler SMAN 9</h1>
-      <p class="text-sm text-gray-500 mt-1">Sistem Dokumentasi Harian</p>
+  <!-- 1. HALAMAN LOGIN GURU -->
+  <!-- ========================================== -->
+  <div id="halaman-login" class="bg-white w-full max-w-md rounded-2xl shadow-xl p-8 no-print border border-gray-100">
+    <div class="text-center mb-8">
+      <img src="https://lh3.googleusercontent.com/u/0/d/1NmhujSqCWX3fY30wSlAe9Ur5aR0jevXc" alt="Logo SMAN 9" class="w-24 h-24 mx-auto mb-4 object-contain drop-shadow-md">
+      <h1 class="text-2xl font-bold text-gray-800 tracking-tight">Kokurikuler SMAN 9</h1>
+      <p class="text-sm text-gray-500 mt-1 font-medium">Sistem Dokumentasi Harian</p>
     </div>
 
-    <form id="form-login" class="space-y-4">
+    <form id="form-login" class="space-y-5">
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Nama Guru Pendamping</label>
-        <select id="select-guru" class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 outline-none" required>
+        <label class="block text-sm font-semibold text-gray-700 mb-2">Nama Guru Pendamping</label>
+        <select id="select-guru" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition" required>
           <option value="">-- Pilih Nama --</option>
         </select>
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Kelas</label>
-        <select id="select-kelas" class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 outline-none" required>
+        <label class="block text-sm font-semibold text-gray-700 mb-2">Pilih Kelas</label>
+        <select id="select-kelas" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition" required>
           <option value="">-- Pilih Kelas --</option>
           <optgroup label="Jenjang X">
-            <option value="X-1">X-1</option>
-            <option value="X-2">X-2</option>
-            <option value="X-3">X-3</option>
-            <option value="X-4">X-4</option>
-            <option value="X-5">X-5</option>
-            <option value="X-6">X-6</option>
-            <option value="X-7">X-7</option>
-            <option value="X-8">X-8</option>
-            <option value="X-9">X-9</option>
-            <option value="X-10">X-10</option>
-            <option value="X-11">X-11</option>
+            <option value="X-1">X-1</option><option value="X-2">X-2</option><option value="X-3">X-3</option><option value="X-4">X-4</option><option value="X-5">X-5</option>
+            <option value="X-6">X-6</option><option value="X-7">X-7</option><option value="X-8">X-8</option><option value="X-9">X-9</option><option value="X-10">X-10</option><option value="X-11">X-11</option>
           </optgroup>
           <optgroup label="Jenjang XI">
-            <option value="XI A-1">XI A-1</option>
-            <option value="XI A-2">XI A-2</option>
-            <option value="XI A-3">XI A-3</option>
-            <option value="XI A-4">XI A-4</option>
-            <option value="XI B">XI B</option>
-            <option value="XI C-1">XI C-1</option>
-            <option value="XI C-2">XI C-2</option>
-            <option value="XI C-3">XI C-3</option>
-            <option value="XI D-1">XI D-1</option>
-            <option value="XI D-2">XI D-2</option>
+            <option value="XI A-1">XI A-1</option><option value="XI A-2">XI A-2</option><option value="XI A-3">XI A-3</option><option value="XI A-4">XI A-4</option><option value="XI B">XI B</option>
+            <option value="XI C-1">XI C-1</option><option value="XI C-2">XI C-2</option><option value="XI C-3">XI C-3</option><option value="XI D-1">XI D-1</option><option value="XI D-2">XI D-2</option>
           </optgroup>
           <optgroup label="Jenjang XII">
-            <option value="XII A-1">XII A-1</option>
-            <option value="XII A-2">XII A-2</option>
-            <option value="XII A-3">XII A-3</option>
-            <option value="XII A-4">XII A-4</option>
-            <option value="XII B">XII B</option>
-            <option value="XII C-1">XII C-1</option>
-            <option value="XII C-2">XII C-2</option>
-            <option value="XII C-3">XII C-3</option>
-            <option value="XII C-4">XII C-4</option>
-            <option value="XII D">XII D</option>
+            <option value="XII A-1">XII A-1</option><option value="XII A-2">XII A-2</option><option value="XII A-3">XII A-3</option><option value="XII A-4">XII A-4</option><option value="XII B">XII B</option>
+            <option value="XII C-1">XII C-1</option><option value="XII C-2">XII C-2</option><option value="XII C-3">XII C-3</option><option value="XII C-4">XII C-4</option><option value="XII D">XII D</option>
           </optgroup>
         </select>
       </div>
-      <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition duration-200 mt-4">
+      <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-3.5 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 mt-2">
         Masuk ke Kelas
       </button>
     </form>
     
-    <div class="text-center mt-6">
-      <button id="btn-akses-admin" type="button" class="text-xs text-gray-400 hover:text-gray-600 font-semibold cursor-pointer">Akses Koordinator / Admin</button>
-      <div class="mt-6 pt-4 border-t border-gray-100">
-        <p class="text-[11px] text-gray-400 font-medium tracking-wide">
+    <div class="text-center mt-8">
+      <button id="btn-akses-admin" type="button" class="text-xs text-gray-400 hover:text-blue-600 font-semibold cursor-pointer transition">Masuk sebagai Koordinator / Admin</button>
+      <div class="mt-6 pt-5 border-t border-gray-100">
+        <p class="text-[10px] text-gray-400 font-medium tracking-wider uppercase">
           Si-Kokur9 | Develop by pakgurutri @2026 | Part of SYNC9
         </p>
       </div>    
@@ -96,95 +79,26 @@
   </div>
 
   <!-- ========================================== -->
-  <!-- HALAMAN LOGIN ADMIN -->
-  <div id="halaman-login-admin" class="bg-white w-full max-w-md rounded-xl shadow-lg p-6 hidden no-print">
-    <div class="text-center mb-6">
-      <h2 class="text-xl font-bold text-gray-800">Ruang Koordinator</h2>
-      <p class="text-sm text-gray-500 mt-1">Masukkan Sandi Akses</p>
-    </div>
-    <form id="form-login-admin" class="space-y-4">
-      <input type="password" id="input-pass-admin" class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-gray-800 outline-none text-center" placeholder="********" required>
-      <button type="submit" class="w-full bg-gray-800 hover:bg-gray-900 text-white font-semibold py-3 rounded-lg transition duration-200">
-        Masuk Dashboard
-      </button>
-      <button type="button" class="btn-batal-admin w-full bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold py-2 rounded-lg transition duration-200">
-        Kembali
-      </button>
-    </form>
-  </div>
-
+  <!-- 2. HALAMAN LOGIN ADMIN -->
   <!-- ========================================== -->
-  <!-- HALAMAN DASHBOARD KELAS -->
-  <div id="halaman-dashboard" class="bg-white w-full max-w-md rounded-xl shadow-lg p-6 hidden no-print">
-    <div class="text-center mb-6">
-      <h2 class="text-xl font-bold text-gray-800">Menu Kelas</h2>
-      <p id="info-kelas-dashboard" class="text-sm text-blue-600 font-semibold mt-1"></p>
+  <div id="halaman-login-admin" class="bg-white w-full max-w-md rounded-2xl shadow-xl p-8 hidden no-print border border-gray-100">
+    <div class="text-center mb-8">
+      <div class="w-16 h-16 bg-gray-900 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+        <span class="text-2xl text-white">🔒</span>
+      </div>
+      <h2 class="text-2xl font-bold text-gray-800 tracking-tight">Ruang Koordinator</h2>
+      <p class="text-sm text-gray-500 mt-1">Sistem Supervisi Global</p>
     </div>
-    <div class="space-y-3">
-      <button id="menu-presensi" class="w-full bg-blue-50 hover:bg-blue-100 text-blue-700 font-semibold py-4 rounded-xl border border-blue-200 flex items-center justify-center gap-2 transition">
-        📋 Presensi & Materi Harian
-      </button>
-      <button id="menu-proyek" class="w-full bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold py-4 rounded-xl border border-indigo-200 flex items-center justify-center gap-2 transition">
-        🚀 Inisiasi Proyek Baru
-      </button>
-      <button id="menu-kelompok" class="w-full bg-purple-50 hover:bg-purple-100 text-purple-700 font-semibold py-4 rounded-xl border border-purple-200 flex items-center justify-center gap-2 transition">
-        👥 Pembagian Kelompok
-      </button>
-      <button id="menu-progres" class="w-full bg-green-50 hover:bg-green-100 text-green-700 font-semibold py-4 rounded-xl border border-green-200 flex items-center justify-center gap-2 transition">
-        📈 Evaluasi Progres Proyek
-      </button>
-    </div>
-    <div class="mt-6">
-      <button id="btn-keluar" class="w-full text-red-500 font-medium text-sm py-2 hover:bg-red-50 rounded-lg transition">Keluar / Ganti Kelas</button>
-    </div>
-  </div>
-
-  <!-- ========================================== -->
-  <!-- HALAMAN PROYEK -->
-  <div id="halaman-proyek" class="bg-white w-full max-w-md rounded-xl shadow-lg p-6 hidden no-print">
-    <div class="border-b pb-3 mb-4">
-      <h2 class="text-lg font-bold text-gray-800">Inisiasi Proyek</h2>
-      <p id="info-kelas-proyek" class="text-sm text-indigo-600 font-semibold mt-1"></p>
-    </div>
-    <form id="form-proyek" class="space-y-4">
+    <form id="form-login-admin" class="space-y-5">
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Nama / Judul Proyek</label>
-        <input type="text" id="input-nama-proyek" class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Contoh: Pembuatan Miniatur Roket Air" required>
+        <label class="block text-sm font-semibold text-gray-700 mb-2">Sandi Akses</label>
+        <input type="password" id="input-pass-admin" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-gray-800 outline-none text-center tracking-[0.3em] font-bold" placeholder="********" required>
       </div>
-      <div class="pt-2 space-y-2">
-        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-lg transition duration-200">
-          Buat Proyek
+      <div class="flex flex-col gap-3 pt-2">
+        <button type="submit" class="w-full bg-gray-900 hover:bg-black text-white font-bold py-3.5 rounded-xl shadow-lg transition duration-200">
+          Buka Dashboard
         </button>
-        <button type="button" class="btn-kembali-dashboard w-full bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold py-2 rounded-lg transition duration-200">
-          Kembali ke Menu
-        </button>
-      </div>
-    </form>
-  </div>
-
-  <!-- ========================================== -->
-  <!-- HALAMAN PRESENSI -->
-  <div id="halaman-presensi" class="bg-white w-full max-w-md rounded-xl shadow-lg p-6 hidden no-print">
-    <div class="border-b pb-3 mb-4">
-      <h2 class="text-lg font-bold text-gray-800">Presensi & Materi</h2>
-      <p id="info-kelas" class="text-sm text-blue-600 font-semibold mt-1"></p>
-    </div>
-    <form id="form-presensi" class="space-y-5">
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Materi / Kegiatan Hari Ini</label>
-        <textarea id="input-materi" rows="2" class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Contoh: Diskusi progres alat, praktek lapangan..." required></textarea>
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">Daftar Siswa</label>
-        <div id="list-siswa" class="space-y-2 max-h-96 overflow-y-auto pr-1">
-          <p class="text-sm text-gray-500 text-center italic py-4">Memuat data siswa...</p>
-        </div>
-      </div>
-      <div class="pt-2 space-y-2">
-        <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-lg transition duration-200">
-          Simpan Presensi
-        </button>
-        <button type="button" class="btn-kembali-dashboard w-full bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold py-2 rounded-lg transition duration-200">
+        <button type="button" class="btn-batal-admin w-full bg-white border-2 border-gray-200 hover:bg-gray-50 text-gray-600 font-bold py-3 rounded-xl transition duration-200">
           Kembali
         </button>
       </div>
@@ -192,206 +106,431 @@
   </div>
 
   <!-- ========================================== -->
-  <!-- HALAMAN KELOMPOK -->
-  <div id="halaman-kelompok" class="bg-white w-full max-w-md rounded-xl shadow-lg p-6 hidden no-print">
-    <div class="border-b pb-3 mb-4">
-      <h2 class="text-lg font-bold text-gray-800">Pembagian Kelompok</h2>
-      <p id="info-kelas-kelompok" class="text-sm text-purple-600 font-semibold mt-1"></p>
+  <!-- 3. DASHBOARD GURU (GRID ELEGAN) -->
+  <!-- ========================================== -->
+  <div id="halaman-dashboard" class="w-full max-w-2xl hidden no-print my-4">
+    <!-- Header Guru -->
+    <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 mb-6 flex justify-between items-center">
+      <div>
+        <h2 class="text-2xl font-extrabold text-gray-800">Ruang Kelas</h2>
+        <p id="info-kelas-dashboard" class="text-sm font-medium text-blue-600 mt-1 bg-blue-50 px-3 py-1 rounded-full inline-block"></p>
+      </div>
+      <button id="btn-keluar" class="bg-red-50 hover:bg-red-100 text-red-600 font-bold py-2 px-4 rounded-xl transition shadow-sm text-sm">Ganti Kelas</button>
     </div>
-    <form id="form-kelompok" class="space-y-4">
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Pilih Proyek</label>
-        <select id="select-proyek-kelompok" class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-purple-500 outline-none" required>
-          <option value="">-- Memuat Proyek... --</option>
-        </select>
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Nama Kelompok</label>
-        <input type="text" id="input-nama-kelompok" class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-purple-500 outline-none" placeholder="Contoh: Kelompok Alpha" required>
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">Pilih Anggota Kelompok</label>
-        <div id="list-siswa-kelompok" class="space-y-2 max-h-60 overflow-y-auto pr-1">
-          <p class="text-sm text-gray-500 text-center italic py-4">Memuat data siswa...</p>
+
+    <!-- Grid Menu Guru -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <!-- Menu 1: Presensi -->
+      <div id="menu-presensi" class="hover-card cursor-pointer bg-gradient-to-br from-blue-500 to-blue-700 rounded-3xl p-6 text-white shadow-lg relative overflow-hidden transition-all duration-300">
+        <div class="absolute -right-4 -bottom-4 opacity-20">
+          <svg class="w-32 h-32" fill="currentColor" viewBox="0 0 20 20"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path></svg>
+        </div>
+        <div class="relative z-10">
+          <div class="bg-white/20 w-12 h-12 rounded-xl flex items-center justify-center backdrop-blur-sm mb-4">
+            <span class="text-2xl">📋</span>
+          </div>
+          <h3 class="text-xl font-bold mb-1">Presensi & Jurnal</h3>
+          <p class="text-blue-100 text-sm font-medium">Catat kehadiran dan materi harian siswa.</p>
         </div>
       </div>
-      <div class="pt-2 space-y-2">
-        <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 rounded-lg transition duration-200">
-          Simpan Kelompok
-        </button>
-        <button type="button" class="btn-kembali-dashboard w-full bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold py-2 rounded-lg transition duration-200">
-          Kembali ke Menu
-        </button>
+
+      <!-- Menu 2: Penilaian Proyek -->
+      <div id="menu-penilaian" class="hover-card cursor-pointer bg-gradient-to-br from-green-500 to-emerald-700 rounded-3xl p-6 text-white shadow-lg relative overflow-hidden transition-all duration-300">
+        <div class="absolute -right-4 -bottom-4 opacity-20">
+          <svg class="w-32 h-32" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+        </div>
+        <div class="relative z-10">
+          <div class="bg-white/20 w-12 h-12 rounded-xl flex items-center justify-center backdrop-blur-sm mb-4">
+            <span class="text-2xl">🎯</span>
+          </div>
+          <h3 class="text-xl font-bold mb-1">Penilaian Proyek</h3>
+          <p class="text-green-100 text-sm font-medium">Evaluasi progres, nilai kelompok & individu.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 4. HALAMAN PRESENSI & JURNAL -->
+  <!-- ========================================== -->
+  <div id="halaman-presensi" class="bg-white w-full max-w-md rounded-2xl shadow-xl p-6 hidden no-print border border-gray-100">
+    <div class="border-b border-gray-100 pb-4 mb-5">
+      <div class="flex items-center gap-3">
+        <span class="text-2xl">📋</span>
+        <div>
+          <h2 class="text-xl font-extrabold text-gray-800">Presensi & Jurnal</h2>
+          <p id="info-kelas-presensi" class="text-sm text-blue-600 font-semibold"></p>
+        </div>
+      </div>
+    </div>
+    <form id="form-presensi" class="space-y-5">
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-2">Materi / Kegiatan Hari Ini</label>
+        <textarea id="input-materi" rows="2" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Contoh: Diskusi progres, praktik lapangan..." required></textarea>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-2">Daftar Kehadiran Siswa</label>
+        <div id="list-siswa" class="space-y-2 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+          <p class="text-sm text-gray-500 text-center py-4">Memuat data siswa...</p>
+        </div>
+      </div>
+      <div class="pt-4 flex gap-3">
+        <button type="button" class="btn-kembali-dashboard w-1/3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 rounded-xl transition">Kembali</button>
+        <button type="submit" class="w-2/3 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-md transition">Simpan Jurnal</button>
       </div>
     </form>
   </div>
 
   <!-- ========================================== -->
-  <!-- HALAMAN PROGRES -->
-  <div id="halaman-progres" class="bg-white w-full max-w-md rounded-xl shadow-lg p-6 hidden no-print">
-    <div class="border-b pb-3 mb-4">
-      <h2 class="text-lg font-bold text-gray-800">Evaluasi Progres</h2>
-      <p id="info-kelas-progres" class="text-sm text-green-600 font-semibold mt-1"></p>
-    </div>
-    <form id="form-progres" class="space-y-4">
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Pilih Kelompok</label>
-        <select id="select-kelompok-progres" class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-green-500 outline-none" required>
-          <option value="">-- Memuat Kelompok... --</option>
-        </select>
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Status Kemajuan</label>
-        <select id="select-status-progres" class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-green-500 outline-none" required>
-          <option value="">-- Pilih Fase Proyek --</option>
-          <option value="Perencanaan">Tahap Perencanaan / Konsep</option>
-          <option value="Pelaksanaan">Tahap Pelaksanaan / Pembuatan</option>
-          <option value="Finishing">Tahap Finishing / Revisi</option>
-          <option value="Selesai">Selesai & Siap Presentasi</option>
-        </select>
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Catatan Evaluasi Guru</label>
-        <textarea id="input-catatan-progres" rows="3" class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-green-500 outline-none" placeholder="Berikan feedback, masukan, atau kendala..." required></textarea>
-      </div>
-      <div class="pt-2 space-y-2">
-        <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-lg transition duration-200">
-          Simpan Evaluasi
-        </button>
-        <button type="button" class="btn-kembali-dashboard w-full bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold py-2 rounded-lg transition duration-200">
-          Kembali ke Menu
-        </button>
-      </div>
-    </form>
-  </div>
-
+  <!-- 5. HALAMAN PENILAIAN PROYEK & INDIVIDU -->
   <!-- ========================================== -->
-  <!-- HALAMAN DASHBOARD ADMIN -->
-  <div id="halaman-admin" class="w-full max-w-4xl mx-auto hidden no-print my-8">
-    <div class="flex justify-between items-center bg-gray-800 rounded-t-xl p-6 text-white shadow-lg">
-      <div>
-        <h2 class="text-2xl font-bold mb-1">Panel Koordinator</h2>
-        <p class="text-gray-300 text-sm">Supervisi & Rekapitulasi Global</p>
+  <div id="halaman-penilaian" class="bg-white w-full max-w-md rounded-2xl shadow-xl p-6 hidden no-print border border-gray-100 my-4">
+    <div class="border-b border-gray-100 pb-4 mb-5">
+      <div class="flex items-center gap-3">
+        <span class="text-2xl">🎯</span>
+        <div>
+          <h2 class="text-xl font-extrabold text-gray-800">Penilaian Proyek</h2>
+          <p id="info-kelas-penilaian" class="text-sm text-green-600 font-semibold"></p>
+        </div>
       </div>
-      <button id="btn-keluar-admin" class="bg-gray-700 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg transition">Keluar</button>
     </div>
-
-    <div class="bg-white rounded-b-xl shadow-lg p-6">
-      <!-- Tabs Admin -->
-      <div class="flex space-x-2 border-b border-gray-300 mb-6 pb-2 overflow-x-auto">
-        <button onclick="switchAdminTab('tab-supervisi')" id="btn-tab-supervisi" class="admin-tab-btn px-4 py-2 font-semibold text-blue-600 border-b-2 border-blue-600 rounded-t-lg">Supervisi Harian</button>
-        <button onclick="switchAdminTab('tab-jurnal')" id="btn-tab-jurnal" class="admin-tab-btn px-4 py-2 font-semibold text-gray-500 hover:bg-gray-100 rounded-t-lg transition">Rekap Jurnal</button>
-        <button onclick="switchAdminTab('tab-progres')" id="btn-tab-progres" class="admin-tab-btn px-4 py-2 font-semibold text-gray-500 hover:bg-gray-100 rounded-t-lg transition">Rekap Progres</button>
-        <button onclick="switchAdminTab('tab-edit-kelompok')" id="btn-tab-edit-kelompok" class="admin-tab-btn px-4 py-2 font-semibold text-gray-500 hover:bg-gray-100 rounded-t-lg transition">Edit Kelompok</button>
-      </div>
-
-      <!-- KONTEN: SUPERVISI -->
-      <div id="tab-supervisi" class="admin-tab-content">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
-          <h3 class="text-lg font-bold text-gray-800">Pantauan Kelas Harian</h3>
-          <input type="date" id="filter-date-supervisi" class="border p-2 rounded-lg text-sm bg-gray-50 outline-none w-full md:w-auto" onchange="renderSupervisi()">
+    
+    <form id="form-penilaian" class="space-y-5">
+      <!-- Info Penilaian -->
+      <div class="bg-green-50 p-4 rounded-xl border border-green-100 space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-green-800 mb-1 uppercase tracking-wide">Nama / Sesi Penilaian</label>
+          <input type="text" id="input-sesi-penilaian" class="w-full bg-white border border-green-200 rounded-lg p-2.5 focus:ring-2 focus:ring-green-500 outline-none text-sm font-semibold" placeholder="Contoh: Asesmen Formatif 1, Penilaian Akhir..." required>
         </div>
-        
-        <!-- Filter Jenjang -->
-        <div class="flex gap-2 mb-4 overflow-x-auto pb-2">
-          <button onclick="filterJenjang('ALL')" class="btn-jenjang px-4 py-1.5 bg-blue-600 text-white rounded-lg text-sm font-semibold shadow transition">Semua</button>
-          <button onclick="filterJenjang('X')" class="btn-jenjang px-4 py-1.5 bg-gray-200 text-gray-700 rounded-lg text-sm font-semibold hover:bg-gray-300 transition">Kelas X</button>
-          <button onclick="filterJenjang('XI')" class="btn-jenjang px-4 py-1.5 bg-gray-200 text-gray-700 rounded-lg text-sm font-semibold hover:bg-gray-300 transition">Kelas XI</button>
-          <button onclick="filterJenjang('XII')" class="btn-jenjang px-4 py-1.5 bg-gray-200 text-gray-700 rounded-lg text-sm font-semibold hover:bg-gray-300 transition">Kelas XII</button>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="grid-supervisi">
-          <p class="text-gray-500 italic text-sm">Memuat data supervisi...</p>
+        <div>
+          <label class="block text-xs font-bold text-green-800 mb-1 uppercase tracking-wide">Pilih Kelompok</label>
+          <select id="select-kelompok-penilaian" class="w-full bg-white border border-green-200 rounded-lg p-2.5 focus:ring-2 focus:ring-green-500 outline-none text-sm font-semibold" required>
+            <option value="">-- Memuat Kelompok... --</option>
+          </select>
         </div>
       </div>
 
-      <!-- KONTEN: REKAP JURNAL -->
-      <div id="tab-jurnal" class="admin-tab-content hidden">
-        <div class="flex justify-between items-center mb-4">
-          <h3 class="text-lg font-bold text-gray-800">Jurnal & Presensi Global</h3>
-          <button onclick="cetakLaporan('jurnal')" class="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-700 text-sm font-semibold">🖨️ Cetak</button>
-        </div>
-        <div class="overflow-x-auto border rounded-lg max-h-96">
-          <table class="w-full text-sm text-left text-gray-600">
-            <thead class="bg-gray-100 text-gray-700 sticky top-0">
-              <tr>
-                <th class="px-4 py-3 border-b">Tgl / Jam</th>
-                <th class="px-4 py-3 border-b">Kelas</th>
-                <th class="px-4 py-3 border-b">Guru</th>
-                <th class="px-4 py-3 border-b">Uraian / Materi</th>
-              </tr>
-            </thead>
-            <tbody id="tbody-rekap-jurnal"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- KONTEN: REKAP PROGRES -->
-      <div id="tab-progres" class="admin-tab-content hidden">
-        <div class="flex justify-between items-center mb-4">
-          <h3 class="text-lg font-bold text-gray-800">Laporan Progres Proyek</h3>
-          <button onclick="cetakLaporan('progres')" class="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-700 text-sm font-semibold">🖨️ Cetak</button>
-        </div>
-        <div class="overflow-x-auto border rounded-lg max-h-96">
-          <table class="w-full text-sm text-left text-gray-600">
-            <thead class="bg-gray-100 text-gray-700 sticky top-0">
-              <tr>
-                <th class="px-4 py-3 border-b">Tanggal</th>
-                <th class="px-4 py-3 border-b">Proyek / Kelas</th>
-                <th class="px-4 py-3 border-b">Kelompok</th>
-                <th class="px-4 py-3 border-b">Status</th>
-                <th class="px-4 py-3 border-b">Catatan</th>
-              </tr>
-            </thead>
-            <tbody id="tbody-rekap-progres"></tbody>
-          </table>
-        </div>
-      </div>
-     
-      <!-- KONTEN: EDIT KELOMPOK (KHUSUS ADMIN) -->
-      <div id="tab-edit-kelompok" class="admin-tab-content hidden">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
-          <h3 class="text-lg font-bold text-gray-800">Manajemen Kelompok Siswa</h3>
-          <div class="flex gap-2 w-full md:w-auto">
-            <select id="select-kelas-edit" class="border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none w-full md:w-48 text-sm">
-              <option value="">-- Pilih Kelas --</option>
-              <!-- Opsi kelas akan diisi otomatis dari JS -->
+      <!-- Penilaian Proyek -->
+      <div class="space-y-4">
+        <h3 class="text-sm font-extrabold text-gray-800 border-b pb-1">A. Evaluasi Hasil Proyek (Kelompok)</h3>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">Status Progres</label>
+            <select id="select-status-progres" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2 text-sm outline-none focus:ring-1 focus:ring-green-500" required>
+              <option value="">- Pilih Fase -</option>
+              <option value="Perencanaan">Perencanaan</option>
+              <option value="Pelaksanaan">Pelaksanaan</option>
+              <option value="Finishing">Finishing / Revisi</option>
+              <option value="Selesai">Selesai Final</option>
             </select>
-            <button onclick="loadEditKelompok()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">Muat</button>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">Nilai Produk</label>
+            <select id="select-nilai-kelompok" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2 text-sm outline-none focus:ring-1 focus:ring-green-500 font-bold" required>
+              <option value="">- Pilih Nilai -</option>
+              <option value="Berkembang" class="text-orange-600">Berkembang</option>
+              <option value="Cakap" class="text-blue-600">Cakap</option>
+              <option value="Mahir" class="text-green-600">Mahir</option>
+            </select>
           </div>
         </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 mb-1">Catatan Guru (Kelebihan/Kekurangan)</label>
+          <textarea id="input-catatan-progres" rows="2" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2.5 text-sm outline-none focus:ring-1 focus:ring-green-500" placeholder="Feedback untuk kelompok ini..." required></textarea>
+        </div>
+      </div>
+
+      <!-- Penilaian Anggota (Individu) -->
+      <div class="space-y-3">
+        <h3 class="text-sm font-extrabold text-gray-800 border-b pb-1">B. Penilaian Kinerja Individu</h3>
+        <p class="text-xs text-gray-500 italic mb-2">Pilih kelompok di atas untuk memunculkan nama anggota.</p>
+        <div id="list-nilai-anggota" class="space-y-2 max-h-48 overflow-y-auto pr-1">
+          <!-- Diisi via JS -->
+        </div>
+      </div>
+
+      <div class="pt-4 flex gap-3">
+        <button type="button" class="btn-kembali-dashboard w-1/3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 rounded-xl transition">Kembali</button>
+        <button type="submit" class="w-2/3 bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl shadow-md transition">Simpan Penilaian</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 6. DASHBOARD ADMIN (GRID ELEGAN) -->
+  <!-- ========================================== -->
+  <div id="halaman-admin-dashboard" class="w-full max-w-4xl hidden no-print my-8">
+    <!-- Header Admin -->
+    <div class="bg-gray-900 rounded-3xl shadow-xl p-8 mb-8 text-white flex flex-col md:flex-row justify-between items-start md:items-center gap-4 relative overflow-hidden">
+      <div class="absolute -right-10 -top-10 opacity-10">
+        <svg class="w-64 h-64" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+      </div>
+      <div class="relative z-10">
+        <h2 class="text-3xl font-black mb-1 tracking-tight">Panel Koordinator</h2>
+        <p class="text-gray-400 font-medium tracking-wide">Pusat Kendali Kokurikuler SMAN 9 Surabaya</p>
+      </div>
+      <button id="btn-keluar-admin" class="relative z-10 bg-white/10 hover:bg-red-500 hover:text-white border border-white/20 text-gray-200 font-bold py-2.5 px-6 rounded-xl transition backdrop-blur-sm">Tutup Sesi</button>
+    </div>
+
+    <!-- Grid Menu Admin (2x2) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Supervisi -->
+      <div onclick="bukaAdminPage('halaman-admin-supervisi', renderSupervisi)" class="hover-card cursor-pointer bg-white border border-gray-100 rounded-3xl p-6 shadow-md flex items-center gap-5">
+        <div class="bg-blue-100 text-blue-600 w-14 h-14 rounded-2xl flex items-center justify-center shrink-0">
+          <span class="text-2xl">👁️</span>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold text-gray-800">Supervisi Harian</h3>
+          <p class="text-sm text-gray-500 font-medium mt-1">Pantau pelaporan guru per hari & jenjang.</p>
+        </div>
+      </div>
+      
+      <!-- Rekap Jurnal -->
+      <div onclick="bukaAdminPage('halaman-admin-jurnal')" class="hover-card cursor-pointer bg-white border border-gray-100 rounded-3xl p-6 shadow-md flex items-center gap-5">
+        <div class="bg-purple-100 text-purple-600 w-14 h-14 rounded-2xl flex items-center justify-center shrink-0">
+          <span class="text-2xl">📖</span>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold text-gray-800">Rekap Jurnal</h3>
+          <p class="text-sm text-gray-500 font-medium mt-1">Laporan presensi & materi mengajar.</p>
+        </div>
+      </div>
+
+      <!-- Rekap Penilaian -->
+      <div onclick="bukaAdminPage('halaman-admin-progres')" class="hover-card cursor-pointer bg-white border border-gray-100 rounded-3xl p-6 shadow-md flex items-center gap-5">
+        <div class="bg-green-100 text-green-600 w-14 h-14 rounded-2xl flex items-center justify-center shrink-0">
+          <span class="text-2xl">📈</span>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold text-gray-800">Data Penilaian</h3>
+          <p class="text-sm text-gray-500 font-medium mt-1">Riwayat evaluasi proyek & nilai siswa.</p>
+        </div>
+      </div>
+
+      <!-- Kelola Kelompok -->
+      <div onclick="bukaAdminPage('halaman-admin-kelola')" class="hover-card cursor-pointer bg-white border border-gray-100 rounded-3xl p-6 shadow-md flex items-center gap-5">
+        <div class="bg-orange-100 text-orange-600 w-14 h-14 rounded-2xl flex items-center justify-center shrink-0">
+          <span class="text-2xl">⚙️</span>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold text-gray-800">Kelompok & Tema</h3>
+          <p class="text-sm text-gray-500 font-medium mt-1">Buat/Edit proyek dan alokasi anggota.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 7. HALAMAN ADMIN: SUPERVISI HARIAN -->
+  <!-- ========================================== -->
+  <div id="halaman-admin-supervisi" class="w-full max-w-5xl hidden no-print my-6 bg-white rounded-3xl shadow-lg p-6 md:p-8 border border-gray-100">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 border-b border-gray-100 pb-4 gap-4">
+      <div>
+        <h2 class="text-2xl font-black text-gray-800">Supervisi Harian</h2>
+        <p class="text-sm text-gray-500 font-medium">Pantauan kehadiran guru di kelas.</p>
+      </div>
+      <div class="flex gap-3 w-full md:w-auto">
+        <input type="date" id="filter-date-supervisi" class="border border-gray-300 p-2.5 rounded-xl text-sm bg-gray-50 outline-none w-full md:w-auto font-semibold focus:ring-2 focus:ring-blue-500" onchange="renderSupervisi()">
+        <button class="btn-kembali-admin bg-gray-800 hover:bg-black text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-md transition whitespace-nowrap">Kembali</button>
+      </div>
+    </div>
+    
+    <!-- Filter Jenjang -->
+    <div class="flex gap-2 mb-6 overflow-x-auto pb-2 custom-scrollbar">
+      <button onclick="filterJenjang('ALL')" class="btn-jenjang px-5 py-2 bg-blue-600 text-white rounded-xl text-sm font-bold shadow-md transition">Semua</button>
+      <button onclick="filterJenjang('X')" class="btn-jenjang px-5 py-2 bg-gray-100 text-gray-600 hover:bg-gray-200 rounded-xl text-sm font-bold transition">Kelas X</button>
+      <button onclick="filterJenjang('XI')" class="btn-jenjang px-5 py-2 bg-gray-100 text-gray-600 hover:bg-gray-200 rounded-xl text-sm font-bold transition">Kelas XI</button>
+      <button onclick="filterJenjang('XII')" class="btn-jenjang px-5 py-2 bg-gray-100 text-gray-600 hover:bg-gray-200 rounded-xl text-sm font-bold transition">Kelas XII</button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5" id="grid-supervisi">
+      <p class="text-gray-500 italic text-sm">Pilih tanggal untuk melihat data...</p>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 8. HALAMAN ADMIN: REKAP JURNAL -->
+  <!-- ========================================== -->
+  <div id="halaman-admin-jurnal" class="w-full max-w-5xl hidden no-print my-6 bg-white rounded-3xl shadow-lg p-6 md:p-8 border border-gray-100">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 border-b border-gray-100 pb-4 gap-4">
+      <div>
+        <h2 class="text-2xl font-black text-gray-800">Rekap Jurnal & Presensi</h2>
+        <p class="text-sm text-gray-500 font-medium">Histori kegiatan harian per kelas.</p>
+      </div>
+      <div class="flex gap-2 w-full md:w-auto">
+        <button onclick="cetakLaporan('jurnal')" class="bg-blue-100 text-blue-700 hover:bg-blue-200 px-4 py-2.5 rounded-xl text-sm font-bold transition flex items-center gap-2"><span class="text-lg">🖨️</span> Cetak</button>
+        <button class="btn-kembali-admin bg-gray-800 hover:bg-black text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-md transition">Kembali</button>
+      </div>
+    </div>
+    
+    <div class="flex flex-col md:flex-row gap-3 mb-5 p-4 bg-gray-50 rounded-2xl border border-gray-100">
+      <select id="filter-kelas-jurnal" class="w-full md:w-64 border border-gray-300 rounded-xl p-2.5 text-sm font-semibold outline-none focus:ring-2 focus:ring-purple-500">
+        <option value="">-- Pilih Kelas untuk Filter --</option>
+        <!-- Diisi via JS -->
+      </select>
+      <button onclick="renderRekapJurnal()" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow transition">Tampilkan Data</button>
+    </div>
+
+    <div class="overflow-x-auto border border-gray-200 rounded-2xl max-h-[60vh] custom-scrollbar">
+      <table class="w-full text-sm text-left text-gray-600">
+        <thead class="bg-gray-100 text-gray-800 sticky top-0 uppercase text-xs font-bold tracking-wider">
+          <tr>
+            <th class="px-5 py-4 border-b">Tanggal & Jam</th>
+            <th class="px-5 py-4 border-b">Guru</th>
+            <th class="px-5 py-4 border-b">Uraian / Materi</th>
+            <th class="px-5 py-4 border-b">Siswa Absen</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-rekap-jurnal">
+          <tr><td colspan="4" class="px-5 py-8 text-center text-gray-500 italic">Pilih kelas lalu klik "Tampilkan Data"</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 9. HALAMAN ADMIN: REKAP PENILAIAN PROYEK -->
+  <!-- ========================================== -->
+  <div id="halaman-admin-progres" class="w-full max-w-6xl hidden no-print my-6 bg-white rounded-3xl shadow-lg p-6 md:p-8 border border-gray-100">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 border-b border-gray-100 pb-4 gap-4">
+      <div>
+        <h2 class="text-2xl font-black text-gray-800">Rekap Penilaian Proyek</h2>
+        <p class="text-sm text-gray-500 font-medium">Riwayat evaluasi kelopok & nilai individu.</p>
+      </div>
+      <div class="flex gap-2 w-full md:w-auto">
+        <button onclick="cetakLaporan('progres')" class="bg-green-100 text-green-700 hover:bg-green-200 px-4 py-2.5 rounded-xl text-sm font-bold transition flex items-center gap-2"><span class="text-lg">🖨️</span> Cetak</button>
+        <button class="btn-kembali-admin bg-gray-800 hover:bg-black text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-md transition">Kembali</button>
+      </div>
+    </div>
+    
+    <div class="flex flex-col md:flex-row gap-3 mb-5 p-4 bg-gray-50 rounded-2xl border border-gray-100">
+      <select id="filter-kelas-progres" class="w-full md:w-64 border border-gray-300 rounded-xl p-2.5 text-sm font-semibold outline-none focus:ring-2 focus:ring-green-500">
+        <option value="">-- Pilih Kelas untuk Filter --</option>
+        <!-- Diisi via JS -->
+      </select>
+      <button onclick="renderRekapProgres()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow transition">Tampilkan Data</button>
+    </div>
+
+    <div class="overflow-x-auto border border-gray-200 rounded-2xl max-h-[60vh] custom-scrollbar">
+      <table class="w-full text-sm text-left text-gray-600">
+        <thead class="bg-gray-100 text-gray-800 sticky top-0 uppercase text-xs font-bold tracking-wider">
+          <tr>
+            <th class="px-4 py-4 border-b">Tanggal & Sesi</th>
+            <th class="px-4 py-4 border-b">Tema Proyek</th>
+            <th class="px-4 py-4 border-b">Kelompok & Status</th>
+            <th class="px-4 py-4 border-b">Catatan & Nilai Klp.</th>
+            <th class="px-4 py-4 border-b min-w-[200px]">Rincian Nilai Anggota</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-rekap-progres">
+          <tr><td colspan="5" class="px-5 py-8 text-center text-gray-500 italic">Pilih kelas lalu klik "Tampilkan Data"</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 10. HALAMAN ADMIN: KELOLA KELOMPOK & TEMA -->
+  <!-- ========================================== -->
+  <div id="halaman-admin-kelola" class="w-full max-w-5xl hidden no-print my-6">
+    <!-- Header Page -->
+    <div class="bg-white rounded-3xl shadow-md p-6 mb-6 flex justify-between items-center border border-gray-100">
+      <div>
+        <h2 class="text-2xl font-black text-gray-800">Kelola Kelompok & Tema</h2>
+        <p class="text-sm text-gray-500 font-medium">Otoritas pembagian proyek.</p>
+      </div>
+      <button class="btn-kembali-admin bg-gray-800 hover:bg-black text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-md transition">Kembali</button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Kolom Kiri: Buat Tema & Buat Kelompok -->
+      <div class="space-y-6">
+        <!-- 10A. Buat Tema -->
+        <div class="bg-white rounded-3xl shadow-md p-6 border border-gray-100 relative overflow-hidden">
+          <div class="border-b border-gray-100 pb-3 mb-4 flex items-center gap-2">
+            <span class="text-xl">🚀</span><h3 class="font-extrabold text-gray-800">Inisiasi Tema / Proyek</h3>
+          </div>
+          <form id="form-admin-proyek" class="space-y-4 relative z-10">
+            <select id="admin-proyek-kelas" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm font-semibold outline-none focus:ring-1 focus:ring-indigo-500" required>
+              <option value="">-- Pilih Kelas --</option>
+            </select>
+            <input type="text" id="admin-proyek-nama" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm outline-none focus:ring-1 focus:ring-indigo-500" placeholder="Judul Tema / Proyek..." required>
+            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl shadow transition">Buat Proyek</button>
+          </form>
+        </div>
+
+        <!-- 10B. Buat Kelompok Baru -->
+        <div class="bg-white rounded-3xl shadow-md p-6 border border-gray-100">
+          <div class="border-b border-gray-100 pb-3 mb-4 flex items-center gap-2">
+            <span class="text-xl">👥</span><h3 class="font-extrabold text-gray-800">Pembentukan Kelompok</h3>
+          </div>
+          <form id="form-admin-kelompok" class="space-y-4">
+            <div class="flex gap-2">
+              <select id="admin-kelompok-kelas" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm font-semibold outline-none focus:ring-1 focus:ring-purple-500" required>
+                <option value="">-- Pilih Kelas --</option>
+              </select>
+              <button type="button" onclick="loadDataSiswaUntukKelompokAdmin()" class="bg-gray-800 hover:bg-black text-white px-4 rounded-xl text-xs font-bold transition">Load</button>
+            </div>
+            
+            <select id="admin-kelompok-proyek" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm outline-none focus:ring-1 focus:ring-purple-500" required>
+              <option value="">-- Pilih Proyek Terlebih Dahulu --</option>
+            </select>
+            
+            <input type="text" id="admin-kelompok-nama" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm outline-none focus:ring-1 focus:ring-purple-500" placeholder="Nama Kelompok (Cth: Alpha)" required>
+            
+            <div class="border rounded-xl p-3 bg-gray-50 border-gray-200">
+              <p class="text-xs font-bold text-gray-600 mb-2 uppercase">Centang Anggota:</p>
+              <div id="admin-list-siswa-kelompok" class="space-y-2 max-h-40 overflow-y-auto pr-1 text-sm custom-scrollbar">
+                <p class="text-gray-400 italic text-center py-2">Pilih kelas & klik Load.</p>
+              </div>
+            </div>
+            
+            <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2.5 rounded-xl shadow transition">Simpan Kelompok</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Kolom Kanan: Edit Kelompok -->
+      <div class="bg-white rounded-3xl shadow-md p-6 border border-gray-100 h-full">
+        <div class="border-b border-gray-100 pb-3 mb-4 flex items-center gap-2">
+          <span class="text-xl">🔄</span><h3 class="font-extrabold text-gray-800">Re-Alokasi (Edit Kelompok)</h3>
+        </div>
+        <div class="flex gap-2 mb-4">
+          <select id="admin-edit-kelas" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm font-semibold outline-none focus:ring-1 focus:ring-orange-500">
+            <option value="">-- Pilih Kelas --</option>
+          </select>
+          <button onclick="loadEditKelompok()" class="bg-orange-600 hover:bg-orange-700 text-white px-4 rounded-xl text-sm font-bold shadow transition">Muat</button>
+        </div>
         
-        <div class="overflow-x-auto border rounded-lg max-h-[500px]">
-          <table class="w-full text-sm text-left text-gray-600">
-            <thead class="bg-gray-100 text-gray-700 sticky top-0">
+        <div class="overflow-y-auto border border-gray-200 rounded-xl max-h-[500px] custom-scrollbar">
+          <table class="w-full text-xs text-left text-gray-600">
+            <thead class="bg-gray-100 sticky top-0 font-bold uppercase tracking-wide">
               <tr>
-                <th class="px-4 py-3 border-b">Nama Siswa</th>
-                <th class="px-4 py-3 border-b">Kelompok Saat Ini</th>
-                <th class="px-4 py-3 border-b w-24 text-center">Aksi</th>
+                <th class="px-3 py-3 border-b">Nama Siswa</th>
+                <th class="px-3 py-3 border-b text-center w-16">Ubah</th>
               </tr>
             </thead>
             <tbody id="tbody-edit-kelompok">
-              <tr>
-                <td colspan="3" class="px-4 py-8 text-center text-gray-500 italic">Pilih kelas di atas dan klik "Muat" untuk menampilkan data.</td>
-              </tr>
+              <tr><td colspan="2" class="px-3 py-6 text-center text-gray-500 italic">Pilih kelas lalu klik "Muat"</td></tr>
             </tbody>
           </table>
         </div>
       </div>
-      
     </div>
   </div>
 
   <!-- ========================================== -->
   <!-- AREA KHUSUS CETAK (PRINT) -->
+  <!-- ========================================== -->
   <div id="print-area" class="print-only">
     <div style="text-align: center; border-bottom: 2px solid black; padding-bottom: 10px; margin-bottom: 20px;">
       <h2 style="margin: 0; font-size: 20px;">PEMERINTAH PROVINSI JAWA TIMUR</h2>
       <h2 style="margin: 0; font-size: 20px;">DINAS PENDIDIKAN</h2>
-      <h1 style="margin: 5px 0; font-size: 24px;">SMA NEGERI 9 SURABAYA</h1>
+      <h1 style="margin: 5px 0; font-size: 24px; font-weight: bold;">SMA NEGERI 9 SURABAYA</h1>
       <p style="margin: 0; font-size: 12px;">Laporan Administrasi Kegiatan Kokurikuler Berbasis Proyek</p>
     </div>
-    <h3 id="print-title" style="text-align: center; text-decoration: underline; margin-bottom: 20px; font-weight: bold;">JUDUL LAPORAN</h3>
+    <h3 id="print-title" style="text-align: center; text-decoration: underline; margin-bottom: 5px; font-weight: bold; font-size: 16px;">JUDUL LAPORAN</h3>
+    <h4 id="print-subtitle" style="text-align: center; margin-bottom: 20px; font-weight: normal; font-size: 14px;">Kelas: -</h4>
     <div id="print-content"></div>
   </div>
 
